@@ -1,0 +1,7 @@
+pandas
+numpy
+seaborn
+-e .
+matplotlib
+tensorflow
+opencv-python

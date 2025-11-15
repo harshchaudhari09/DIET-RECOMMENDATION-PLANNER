@@ -1,0 +1,78 @@
+# pipeline/loggers.py
+import logging
+import logging.handlers
+import os
+from pathlib import Path
+from typing import Optional
+
+LOG_DIR = Path(__file__).resolve().parents[1] / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def _make_formatter() -> logging.Formatter:
+    fmt = "%(asctime)s %(levelname)s [%(name)s] %(message)s"
+    datefmt = "%Y-%m-%d %H:%M:%S"
+    return logging.Formatter(fmt=fmt, datefmt=datefmt)
+
+
+def _add_console_handler(logger: logging.Logger, level: int) -> None:
+    if not any(isinstance(h, logging.StreamHandler) for h in logger.handlers):
+        sh = logging.StreamHandler()
+        sh.setLevel(level)
+        sh.setFormatter(_make_formatter())
+        logger.addHandler(sh)
+
+
+def _add_file_handler(
+    logger: logging.Logger,
+    filename: str,
+    level: int,
+    when: str = "midnight",
+    backup_count: int = 7,
+) -> None:
+    # use TimedRotatingFileHandler for daily rotation by default
+    path = LOG_DIR / filename
+    if not any(
+        isinstance(h, logging.handlers.TimedRotatingFileHandler) and getattr(h, "baseFilename", "") == str(path)
+        for h in logger.handlers
+    ):
+        fh = logging.handlers.TimedRotatingFileHandler(
+            filename=str(path), when=when, backupCount=backup_count, encoding="utf-8"
+        )
+        fh.setLevel(level)
+        fh.setFormatter(_make_formatter())
+        logger.addHandler(fh)
+
+
+def get_logger(
+    name: Optional[str] = None,
+    level: int = logging.INFO,
+    log_to_file: bool = True,
+    filename: str = "pipeline.log",
+    when: str = "midnight",
+    backup_count: int = 7,
+) -> logging.Logger:
+    """
+    Return a configured logger.
+
+    - name: logger name (None -> root logger)
+    - level: logging level
+    - log_to_file: whether to write logs to file in pipeline/logs/
+    - filename: file name for rotating file handler
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    # prevent adding duplicate handlers when called multiple times
+    _add_console_handler(logger, level)
+    if log_to_file:
+        _add_file_handler(logger, filename, level, when=when, backup_count=backup_count)
+
+    # avoid propagation to root handlers if caller configured root separately
+    logger.propagate = False
+    return logger
+
+
+# module-level default logger
+logger = get_logger(__name__)
+__all__ = ["get_logger", "logger"]
