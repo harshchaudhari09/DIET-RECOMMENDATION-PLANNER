@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CuraDiet — Diabetes Risk & Diet Planner</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>CuraDiet</h1>
+    <p class="subtitle">Diabetes risk check + a personalized diet plan</p>
+
+    {% if metrics %}
+    <div class="stats">
+      <div><strong>{{ metrics.accuracy }}%</strong><span>test accuracy</span></div>
+      <div><strong>{{ metrics.roc_auc }}</strong><span>ROC-AUC</span></div>
+      <div><strong>{{ "{:,}".format(metrics.n_test) }}</strong><span>held-out patients</span></div>
+    </div>
+    {% endif %}
+
+    <div class="notice">
+      <strong>Note:</strong> the risk model is trained on ~96,000 anonymised patient records
+      (men and women, ages 18–80+) and checked against ADA diagnostic cut-offs. It is a
+      screening aid built as a student project — <strong>not medical advice or a diagnosis</strong>.
+    </div>
+
+    {% if startup_error %}
+      <div class="errors"><strong>Setup needed:</strong> {{ startup_error }}</div>
+    {% endif %}
+
+    {% if errors %}
+      <div class="errors" role="alert">
+        <strong>Please fix the following:</strong>
+        <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      </div>
+    {% endif %}
+
+    <form action="/predict" method="post" novalidate>
+      <fieldset>
+        <legend>About you</legend>
+        <div class="grid">
+          <label>Age (years)
+            <input type="number" name="age" min="18" max="100" value="{{ values.get('age', '') }}" required>
+          </label>
+
+          <label>Sex
+            <select name="gender">
+              {% for g in genders %}
+                <option value="{{ g }}" {% if values.get('gender') == g %}selected{% endif %}>{{ g }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>Height (cm)
+            <input type="number" step="0.1" name="height_cm" min="120" max="230" value="{{ values.get('height_cm', '') }}" required>
+          </label>
+
+          <label>Weight (kg)
+            <input type="number" step="0.1" name="weight_kg" min="30" max="300" value="{{ values.get('weight_kg', '') }}" required>
+          </label>
+
+          <label>Activity level
+            <select name="activity">
+              {% for a in activities %}
+                <option value="{{ a }}" {% if values.get('activity') == a %}selected{% endif %}>{{ a|capitalize }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>Smoking history
+            <select name="smoking_history">
+              {% for key, label in smoking_options.items() %}
+                <option value="{{ key }}" {% if values.get('smoking_history') == key %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Lab values & vitals</legend>
+        <div class="grid">
+          <label>HbA1c (%)
+            <input type="number" step="0.1" name="hba1c" min="3.5" max="15" value="{{ values.get('hba1c', '') }}" required>
+            <small>From a recent blood test. Typical non-diabetic range is 4.0–5.6%.</small>
+          </label>
+
+          <label>Blood glucose (mg/dL)
+            <input type="number" step="1" name="glucose" min="50" max="400" value="{{ values.get('glucose', '') }}" required>
+            <small>If you have mmol/L, multiply by 18.</small>
+          </label>
+
+          <label>Systolic BP (upper, mmHg)
+            <input type="number" name="systolic" min="70" max="250" value="{{ values.get('systolic', '') }}" required>
+          </label>
+
+          <label>Diastolic BP (lower, mmHg)
+            <input type="number" name="diastolic" min="40" max="150" value="{{ values.get('diastolic', '') }}" required>
+          </label>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" name="glucose_fasting" {% if values.get('glucose_fasting') %}checked{% endif %}>
+          The glucose reading was taken fasting (no food for 8+ hours)
+        </label>
+        <label class="check">
+          <input type="checkbox" name="hypertension_dx" {% if values.get('hypertension_dx') %}checked{% endif %}>
+          I've been diagnosed with high blood pressure
+        </label>
+        <label class="check">
+          <input type="checkbox" name="heart_disease" {% if values.get('heart_disease') %}checked{% endif %}>
+          I've been diagnosed with heart disease
+        </label>
+      </fieldset>
+
+      <button type="submit">Get my plan</button>
+    </form>
+  </div>
+</body>
+</html>

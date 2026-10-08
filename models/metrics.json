@@ -1,0 +1,60 @@
+{
+  "dataset": "diabetes_prediction_dataset.csv",
+  "n_rows_after_cleaning": 96128,
+  "n_train": 76902,
+  "n_test": 19226,
+  "prevalence": 0.0882,
+  "sklearn_version": "1.6.1",
+  "cv_model_comparison": {
+    "LogisticRegression": {
+      "cv_roc_auc": 0.962,
+      "cv_accuracy": 0.9587,
+      "cv_balanced_accuracy": 0.8108
+    },
+    "RandomForest": {
+      "cv_roc_auc": 0.9697,
+      "cv_accuracy": 0.97,
+      "cv_balanced_accuracy": 0.8374
+    },
+    "HistGradientBoosting": {
+      "cv_roc_auc": 0.9794,
+      "cv_accuracy": 0.9706,
+      "cv_balanced_accuracy": 0.8399
+    }
+  },
+  "best_model": "HistGradientBoosting",
+  "test": {
+    "roc_auc": 0.9776,
+    "majority_class_baseline_accuracy": 0.9118,
+    "at_decision_threshold": {
+      "threshold": 0.5,
+      "accuracy": 0.9719,
+      "balanced_accuracy": 0.8472,
+      "precision": 0.9801,
+      "recall_sensitivity": 0.6958,
+      "specificity": 0.9986,
+      "f1": 0.8138,
+      "confusion_matrix": {
+        "tn": 17506,
+        "fp": 24,
+        "fn": 516,
+        "tp": 1180
+      }
+    },
+    "at_screening_threshold": {
+      "threshold": 0.16,
+      "accuracy": 0.9365,
+      "balanced_accuracy": 0.8959,
+      "precision": 0.5991,
+      "recall_sensitivity": 0.8467,
+      "specificity": 0.9452,
+      "f1": 0.7017,
+      "confusion_matrix": {
+        "tn": 16569,
+        "fp": 961,
+        "fn": 260,
+        "tp": 1436
+      }
+    }
+  }
+}

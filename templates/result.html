@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your Plan — CuraDiet</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Your Results</h1>
+
+    {% for w in diet.warnings %}
+      <div class="errors" role="alert">{{ w }}</div>
+    {% endfor %}
+
+    <div class="card risk-{{ risk.level|lower }}">
+      <h2>Diabetes risk: {{ risk.level }}</h2>
+      <p>Model-estimated probability: <strong>{{ risk_prob }}%</strong></p>
+      <div class="meter" aria-hidden="true"><span style="width: {{ [risk_prob, 2]|max }}%"></span></div>
+      {% if risk.clinical_flags %}
+        <ul class="flags">
+          {% for f in risk.clinical_flags %}<li>{{ f }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+      <p class="muted">
+        <strong>Low</strong> = below the screening threshold ·
+        <strong>Elevated</strong> = worth a check-up / lifestyle changes ·
+        <strong>High</strong> = model or lab values point to likely diabetes — see a doctor.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>{{ diet.label }}</h2>
+      <div class="stats">
+        <div><strong>{{ "{:,}".format(diet.daily_calories) }}</strong><span>kcal / day</span></div>
+        <div><strong>{{ diet.protein_g }} g</strong><span>protein ({{ diet.macro_percentages.protein }}%)</span></div>
+        <div><strong>{{ diet.carbs_g }} g</strong><span>carbs ({{ diet.macro_percentages.carbs }}%)</span></div>
+        <div><strong>{{ diet.fat_g }} g</strong><span>fat ({{ diet.macro_percentages.fat }}%)</span></div>
+      </div>
+
+      <h3>Daily targets & limits</h3>
+      <table>
+        <tr><td>Fibre</td><td>at least {{ diet.fiber_g }} g</td></tr>
+        <tr><td>Sodium</td><td>under {{ "{:,}".format(diet.sodium_mg) }} mg</td></tr>
+        <tr><td>Added sugar</td><td>under {{ diet.added_sugar_g }} g</td></tr>
+        <tr><td>Saturated fat</td><td>under {{ diet.saturated_fat_g }} g</td></tr>
+        <tr><td>BMI</td><td>{{ diet.bmi }} ({{ diet.bmi_category }})</td></tr>
+        <tr><td>Blood pressure</td><td>{{ diet.bp_category }}</td></tr>
+      </table>
+
+      <h3>How to split your day</h3>
+      <table>
+        <tr><th>Meal</th><th>kcal</th><th>Carbs</th><th>Protein</th></tr>
+        {% for name, m in diet.meals.items() %}
+          <tr><td>{{ name }}</td><td>{{ m.calories }}</td><td>{{ m.carbs_g }} g</td><td>{{ m.protein_g }} g</td></tr>
+        {% endfor %}
+      </table>
+
+      <div class="two-col">
+        <div>
+          <h3>Eat more of</h3>
+          <ul>{% for f in diet.foods_to_emphasize %}<li>{{ f }}</li>{% endfor %}</ul>
+        </div>
+        <div>
+          <h3>Limit</h3>
+          <ul>{% for f in diet.foods_to_limit %}<li>{{ f }}</li>{% endfor %}</ul>
+        </div>
+      </div>
+
+      <h3>Why these numbers?</h3>
+      <ul>
+        {% for note in diet.notes %}
+          <li>{{ note }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if metrics %}
+      <p class="muted">
+        Model: {{ metrics.model }} · {{ metrics.accuracy }}% accuracy and ROC-AUC {{ metrics.roc_auc }}
+        on {{ "{:,}".format(metrics.n_test) }} held-out patients. Not a diagnosis.
+      </p>
+    {% endif %}
+
+    <a href="/" class="back-link">&larr; Try again</a>
+  </div>
+</body>
+</html>
