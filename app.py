@@ -10,7 +10,7 @@ Run: python app.py   (then open http://127.0.0.1:5000)
 import json
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request, url_for
 
 from src.config import ACTIVITY_MULTIPLIERS, GENDERS, METRICS_PATH, SMOKING_OPTIONS
 from src.diet_rules import calculate_bmi, recommend_diet
@@ -57,8 +57,20 @@ def home():
     return render_form()
 
 
-@app.route("/predict", methods=["POST"])
+@app.route("/healthz", methods=["GET"])
+def healthz():
+    # Used by the hosting platform's health check
+    if model_bundle is None:
+        return {"status": "error", "detail": startup_error}, 503
+    return {"status": "ok", "model": model_bundle["model_name"]}
+
+
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
+    # Someone opening /predict directly (or a shared link) gets the form
+    # instead of a "405 Method Not Allowed" page.
+    if request.method == "GET":
+        return redirect(url_for("home"))
     if model_bundle is None:
         return render_form(request.form, [startup_error], status=503)
 

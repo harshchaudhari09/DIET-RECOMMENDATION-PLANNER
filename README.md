@@ -11,7 +11,7 @@ guidelines (ADA, ACC/AHA, DASH).
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-web%20app-000000?logo=flask&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-32%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-34%20passing-2ea44f)
 ![Accuracy](https://img.shields.io/badge/test%20accuracy-97.2%25-1f7a5c)
 ![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.978-1f7a5c)
 
@@ -28,7 +28,7 @@ guidelines (ADA, ACC/AHA, DASH).
 | 🩺 **Screening mode** | catches **84.7%** of diabetes cases while keeping 93.7% accuracy |
 | 🛡️ **Clinical safety layer** | official ADA cut-offs for HbA1c and glucose are applied on top of the model |
 | 🍽️ **Personalized plans** | calories, macros, fibre/sodium/sugar limits, a per-meal split and food suggestions |
-| ✅ **Tested** | 32 pytest tests covering the diet rules, input validation, model quality and app routes |
+| ✅ **Tested** | 34 pytest tests covering the diet rules, input validation, model quality and app routes |
 
 ## 📸 Screenshots
 
@@ -150,14 +150,26 @@ A trained model is included in `models/`. To retrain it and run the tests:
 
 ```bash
 python -m src.train_model      # about 15 seconds: trains, compares and saves the model + metrics
-python -m pytest               # 32 tests
+python -m pytest               # 34 tests
 python -m src.benchmark_pima   # optional: reproduces the Pima accuracy ceiling
 ```
+
+### ☁️ Deploying
+
+The repo includes a [`render.yaml`](render.yaml) blueprint, so it deploys to
+[Render](https://render.com)'s free tier in a few clicks:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/harshchaudhari09/DIET-RECOMMENDATION-PLANNER)
+
+It runs under `gunicorn`, and `/healthz` is the health-check endpoint. On the free tier
+the app sleeps after about 15 minutes without traffic, so the first visit afterwards
+takes around a minute to wake it up.
 
 ## 🗂️ Project structure
 
 ```
 ├── app.py                       # Flask app
+├── render.yaml                  # Render deployment blueprint
 ├── src/
 │   ├── config.py                # paths, feature lists, valid input ranges
 │   ├── data.py                  # loading + cleaning (de-duplication)
@@ -190,7 +202,6 @@ python -m src.benchmark_pima   # optional: reproduces the Pima accuracy ceiling
 - [ ] Probability calibration and a reliability plot
 - [ ] SHAP explanations showing which factors drove each prediction
 - [ ] Save submissions to track progress over time
-- [ ] Deploy (Render / Railway) with a live demo link
 
 ## 📚 Data & references
 

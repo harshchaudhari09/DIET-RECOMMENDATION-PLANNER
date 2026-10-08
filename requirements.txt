@@ -1,6 +1,10 @@
 pandas>=2.0
 numpy>=1.24
-scikit-learn>=1.4
+# Pinned: the saved model in models/ was trained with this exact version,
+# and pickled scikit-learn models aren't guaranteed to load across versions.
+# If you change it, re-run `python -m src.train_model`.
+scikit-learn==1.6.1
 flask>=2.3
 joblib>=1.3
+gunicorn>=21.2
 pytest>=7.0

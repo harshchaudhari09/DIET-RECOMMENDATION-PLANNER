@@ -91,3 +91,15 @@ def test_predict_bad_input_returns_form_with_errors(client):
     assert r.status_code == 400
     assert b"Height is required." in r.data
     assert b'value="90"' in r.data  # previously entered values are kept
+
+
+def test_healthz(client):
+    r = client.get("/healthz")
+    assert r.status_code == 200
+    assert r.get_json()["status"] == "ok"
+
+
+def test_get_predict_redirects_to_form(client):
+    r = client.get("/predict")
+    assert r.status_code == 302
+    assert r.headers["Location"].endswith("/")
