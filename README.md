@@ -21,7 +21,7 @@ guidelines (ADA, ACC/AHA, DASH).
 
 ## ✨ Highlights
 
-| | |
+| Feature | Details |
 |---|---|
 | 🎯 **97.2% accuracy** | on 19,226 held-out patients the model never saw during training |
 | 📈 **0.978 ROC-AUC** | strong separation between diabetic and non-diabetic patients |
@@ -46,7 +46,7 @@ guidelines (ADA, ACC/AHA, DASH).
 ## ⚙️ How it works
 
 ```mermaid
-flowchart LR
+flowchart TD
     A[User enters profile<br/>age, sex, height, weight,<br/>HbA1c, glucose, BP, history] --> B[Input validation]
     B --> C[ML risk model<br/>HistGradientBoosting]
     B --> D[ADA clinical cut-offs<br/>HbA1c, fasting / random glucose]
