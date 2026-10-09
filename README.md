@@ -8,12 +8,17 @@ An end-to-end machine learning web app that estimates a person's diabetes risk f
 labs and vitals, then builds a daily calorie, macro and meal plan grounded in clinical
 guidelines (ADA, ACC/AHA, DASH).
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-curadiet.onrender.com-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://curadiet.onrender.com/?example=1)
+
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)
 ![Flask](https://img.shields.io/badge/Flask-web%20app-000000?logo=flask&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-34%20passing-2ea44f)
+![Tests](https://img.shields.io/badge/tests-35%20passing-2ea44f)
 ![Accuracy](https://img.shields.io/badge/test%20accuracy-97.2%25-1f7a5c)
 ![ROC-AUC](https://img.shields.io/badge/ROC--AUC-0.978-1f7a5c)
+
+**[▶ Try it live](https://curadiet.onrender.com/?example=1)**: opens with an example profile filled in; just press *Get my plan*.<br>
+<sub>Hosted on Render's free tier. If the app has been idle, the first load takes up to a minute while it wakes up.</sub>
 
 </div>
 
@@ -28,7 +33,7 @@ guidelines (ADA, ACC/AHA, DASH).
 | 🩺 **Screening mode** | catches **84.7%** of diabetes cases while keeping 93.7% accuracy |
 | 🛡️ **Clinical safety layer** | official ADA cut-offs for HbA1c and glucose are applied on top of the model |
 | 🍽️ **Personalized plans** | calories, macros, fibre/sodium/sugar limits, a per-meal split and food suggestions |
-| ✅ **Tested** | 34 pytest tests covering the diet rules, input validation, model quality and app routes |
+| ✅ **Tested** | 35 pytest tests covering the diet rules, input validation, model quality and app routes |
 
 ## 📸 Screenshots
 
@@ -150,7 +155,7 @@ A trained model is included in `models/`. To retrain it and run the tests:
 
 ```bash
 python -m src.train_model      # about 15 seconds: trains, compares and saves the model + metrics
-python -m pytest               # 34 tests
+python -m pytest               # 35 tests
 python -m src.benchmark_pima   # optional: reproduces the Pima accuracy ceiling
 ```
 

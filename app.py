@@ -52,9 +52,25 @@ def render_form(values=None, errors=None, status=200):
     )
 
 
+# Pre-filled demo profile so visitors can try the app in two clicks
+# (open /?example=1, then press "Get my plan").
+EXAMPLE_PROFILE = {
+    "age": "52",
+    "gender": "Male",
+    "height_cm": "170",
+    "weight_kg": "92",
+    "activity": "light",
+    "smoking_history": "former",
+    "hba1c": "6.1",
+    "glucose": "165",
+    "systolic": "138",
+    "diastolic": "88",
+}
+
+
 @app.route("/", methods=["GET"])
 def home():
-    return render_form()
+    return render_form(EXAMPLE_PROFILE if request.args.get("example") else None)
 
 
 @app.route("/healthz", methods=["GET"])

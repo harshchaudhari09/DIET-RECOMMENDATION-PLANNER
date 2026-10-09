@@ -103,3 +103,10 @@ def test_get_predict_redirects_to_form(client):
     r = client.get("/predict")
     assert r.status_code == 302
     assert r.headers["Location"].endswith("/")
+
+
+def test_example_link_prefills_form(client):
+    r = client.get("/?example=1")
+    assert r.status_code == 200
+    assert b'value="6.1"' in r.data
+    assert b'value="Male" selected' in r.data
